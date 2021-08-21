@@ -4,12 +4,12 @@ import styled from "styled-components";
 import { db } from "../firebase";
 import firebase from "firebase";
 
-function ChatInput({ channelName, channelId }) {
+function ChatInput({ channelName, channelId, chatRef }) {
 	const [input, setInput] = useState("");
 	const sendMessage = (e) => {
 		e.preventDefault();
 
-		if (!channelId) {
+		if (!channelId || input === "") {
 			return false;
 		}
 
@@ -17,8 +17,11 @@ function ChatInput({ channelName, channelId }) {
 			message: input,
 			timestamp: firebase.firestore.FieldValue.serverTimestamp(),
 			user: "Emmanuel Kolawole",
-			userImage:
-				"https://scontent-frx5-2.xx.fbcdn.net/v/t1.6435-9/119282954_3774766162536918_9041178260190273021_n.jpg?_nc_cat=109&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=J58OnOIWLygAX9DdnJ7&_nc_ht=scontent-frx5-2.xx&oh=ead394e022f537ea3f29abc853ca42b2&oe=6144F916",
+			userImage: "https://via.placeholder.com/150",
+		});
+
+		chatRef.current.scrollIntoView({
+			behavior: "smooth",
 		});
 
 		setInput("");
@@ -30,7 +33,7 @@ function ChatInput({ channelName, channelId }) {
 				<input
 					value={input}
 					onChange={(e) => setInput(e.target.value)}
-					placeholder={`Message here`}
+					placeholder={`Message ${channelName}`}
 				/>
 				<Button hidden type="submit" onClick={sendMessage}>
 					SEND
