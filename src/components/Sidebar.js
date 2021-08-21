@@ -1,8 +1,25 @@
-import { Create, FiberManualRecord } from "@material-ui/icons";
+import {
+	Add,
+	Apps,
+	BookmarkBorder,
+	Create,
+	Drafts,
+	ExpandLess,
+	ExpandMore,
+	FiberManualRecord,
+	FileCopy,
+	Inbox,
+	InsertComment,
+	PeopleAlt,
+} from "@material-ui/icons";
 import React from "react";
+import { useCollection } from "react-firebase-hooks/firestore";
 import styled from "styled-components";
+import { db } from "../firebase";
+import SidebarOption from "./SidebarOption";
 
 function Sidebar() {
+	const [channels] = useCollection(db.collection("rooms"));
 	return (
 		<SideBarContainer>
 			<SidebarHeader>
@@ -15,6 +32,21 @@ function Sidebar() {
 				</SidebarInfo>
 				<Create />
 			</SidebarHeader>
+			<SidebarOption Icon={InsertComment} title="Thread" />
+			<SidebarOption Icon={Inbox} title="Mentions & reactions" />
+			<SidebarOption Icon={Drafts} title="Saved items" />
+			<SidebarOption Icon={BookmarkBorder} title="Channel browser" />
+			<SidebarOption Icon={PeopleAlt} title="People & user group" />
+			<SidebarOption Icon={Apps} title="Apps" />
+			<SidebarOption Icon={FileCopy} title="File browser" />
+			<SidebarOption Icon={ExpandLess} title="Show less" />
+			<hr />
+			<SidebarOption Icon={ExpandMore} title="Channels" />
+			<hr />
+			<SidebarOption Icon={Add} addChannelOption title="Add Channel" />
+			{channels?.docs.map((doc) => (
+				<SidebarOption key={doc.id} id={doc.id} title={doc.data().name} />
+			))}
 		</SideBarContainer>
 	);
 }
@@ -28,6 +60,12 @@ const SideBarContainer = styled.div`
 	border-top: 1px solid #49274b;
 	max-width: 260px;
 	margin-top: 60px;
+
+	> hr {
+		margin-top: 10px;
+		margin-bottom: 10px;
+		border: 1px solid #49274b;
+	}
 `;
 
 const SidebarHeader = styled.div`
